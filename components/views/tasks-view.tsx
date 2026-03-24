@@ -7,6 +7,7 @@ import { AddTaskDialog } from '@/components/add-task-dialog';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Lock, Shield, AlertTriangle } from 'lucide-react';
+import { DisciplineTimer } from '@/components/discipline-timer';
 import { cn } from '@/lib/utils';
 
 interface TasksViewProps {
@@ -177,6 +178,9 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
           STUDY
         </Button>
       </div>
+      
+      {/* Temporizador de Disciplina - Solo visible en modo bloqueo */}
+      <DisciplineTimer />
       
       {/* Modos de Disciplina - Compactos */}
       {(isLockdownMode || isForceMode) && !allTasksCompleted && (

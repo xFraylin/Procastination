@@ -101,6 +101,23 @@ interface AppState {
   totalTasks: number; 
 };
   
+  // Timer System
+  isTimerActive: boolean;
+  setTimerActive: (active: boolean) => void;
+  timerDuration: number; // en minutos
+  setTimerDuration: (duration: number) => void;
+  timerTimeRemaining: number; // en segundos
+  setTimerTimeRemaining: (time: number) => void;
+  timerTaskId: number | null;
+  setTimerTaskId: (taskId: number | null) => void;
+  getTimerStatus: () => { 
+    isActive: boolean; 
+    duration: number; 
+    timeRemaining: number; 
+    taskId: number | null;
+    progress: number;
+  };
+  
   // Settings
   settings: Settings | null;
   setSettings: (settings: Settings | null) => void;
@@ -220,6 +237,16 @@ export const useAppStore = create<AppState>()(
       isForceMode: false,
       setForceMode: (active) => set({ isForceMode: active }),
       
+      // Timer System
+      isTimerActive: false,
+      setTimerActive: (active) => set({ isTimerActive: active }),
+      timerDuration: 25, // 25 minutos por defecto
+      setTimerDuration: (duration) => set({ timerDuration: duration }),
+      timerTimeRemaining: 0,
+      setTimerTimeRemaining: (time) => set({ timerTimeRemaining: time }),
+      timerTaskId: null,
+      setTimerTaskId: (taskId) => set({ timerTaskId: taskId }),
+      
       // Absolute Lock System
       isAbsoluteLockActive: false,
       setAbsoluteLockActive: (active) => set({ isAbsoluteLockActive: active }),
@@ -238,6 +265,21 @@ export const useAppStore = create<AppState>()(
           canUnlock: allCompleted,
           tasksRemaining: todayTasks.filter(t => t.completed === 0).length,
           totalTasks: todayTasks.length
+        };
+      },
+      
+      getTimerStatus: () => {
+        const state = get();
+        const progress = state.timerDuration > 0 
+          ? ((state.timerDuration * 60 - state.timerTimeRemaining) / (state.timerDuration * 60)) * 100
+          : 0;
+          
+        return {
+          isActive: state.isTimerActive,
+          duration: state.timerDuration,
+          timeRemaining: state.timerTimeRemaining,
+          taskId: state.timerTaskId,
+          progress: Math.min(100, Math.max(0, progress))
         };
       },
       

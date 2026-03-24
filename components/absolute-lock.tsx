@@ -4,6 +4,7 @@ import { useAppStore } from '@/lib/store';
 import { Lock, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { DisciplineTimer } from '@/components/discipline-timer';
 
 export function AbsoluteLock() {
   const { 
@@ -79,6 +80,9 @@ export function AbsoluteLock() {
             </p>
           </div>
         </div>
+
+        {/* Temporizador de Disciplina */}
+        <DisciplineTimer />
 
         {/* Status */}
         <div className={`rounded-lg p-4 text-center ${
