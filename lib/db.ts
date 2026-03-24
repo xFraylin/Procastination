@@ -1,5 +1,7 @@
-// Simple in-memory database for development
-// In production, this would be replaced with actual SQLite
+// Base de datos SQLite real para producción
+import database from './db-sqlite';
+
+const db = database;
 
 interface MemoryUser {
   id: number;
