@@ -190,7 +190,7 @@ export function useDisciplineTimer() {
       
       return () => clearTimeout(prepareTimer);
     }
-  }, [isAbsoluteLockActive, isTimerActive, startTimer, playSound]);
+  }, [isAbsoluteLockActive, isTimerActive]); // Eliminado startTimer y playSound de las dependencias
 
   // Solicitar permisos de notificación
   useEffect(() => {
