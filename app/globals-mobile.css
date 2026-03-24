@@ -1,0 +1,143 @@
+/* Mobile-first optimizations and animations */
+
+/* Base mobile styles */
+@media (max-width: 768px) {
+  /* Reduce padding everywhere */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Compact cards */
+  .card {
+    padding: 0.75rem !important;
+  }
+  
+  /* Better touch targets */
+  button, [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+    touch-action: manipulation;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Better text sizing */
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+}
+
+/* Touch feedback */
+@keyframes touch-press {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.active:active {
+  animation: touch-press 0.2s ease-in-out;
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Bottom navigation animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.bottom-nav-enter {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Page transitions */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Button hover states */
+@keyframes button-hover {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-2px); }
+}
+
+button:not(:disabled):hover {
+  animation: button-hover 0.2s ease-out;
+}
+
+/* Loading states */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  /* Better contrast in dark mode */
+  .text-muted-foreground {
+    opacity: 0.8;
+  }
+  
+  /* Subtle shadows in dark mode */
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+}
