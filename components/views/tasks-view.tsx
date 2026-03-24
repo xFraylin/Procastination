@@ -65,7 +65,7 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
         </div>
         <Button 
           onClick={() => setShowAddDialog(true)}
-          className="w-full sm:w-auto h-12 text-base"
+          className="w-full sm:w-auto h-12 text-base touch-manipulation active:scale-95 transition-transform"
         >
           Nueva Tarea
         </Button>
@@ -246,7 +246,7 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
                'Crea tu primera tarea para comenzar'}
             </p>
             {filter !== 'completed' && (
-              <Button onClick={() => setShowAddDialog(true)} className="h-12">
+              <Button onClick={() => setShowAddDialog(true)} className="h-12 touch-manipulation active:scale-95 transition-transform">
                 Crear Primera Tarea
               </Button>
             )}
@@ -256,8 +256,9 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
       
       {/* Diálogo para agregar tarea */}
       <AddTaskDialog
-        onOpenChange={setShowAddDialog}
-        onAddTask={onAddTask}
+        onAdd={onAddTask}
+        disabled={false}
+        tasksCount={tasks.length}
       />
     </div>
   );

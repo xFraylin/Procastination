@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -76,6 +77,9 @@ export function AddTaskDialog({ onAdd, disabled, tasksCount }: AddTaskDialogProp
           <DialogTitle className="text-sm font-bold tracking-wider">
             AGREGAR TAREA CRITICA
           </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            Completa todos los campos para agregar una nueva tarea a tu lista de ejecución.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 mt-4">
