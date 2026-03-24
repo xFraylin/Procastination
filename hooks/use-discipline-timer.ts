@@ -202,6 +202,7 @@ export function useDisciplineTimer() {
   return {
     startTimer,
     stopTimer,
+    setTimerDuration,
     timerStatus: {
       isActive: isTimerActive,
       duration: timerDuration,

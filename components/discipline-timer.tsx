@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 
 export function DisciplineTimer() {
-  const { startTimer, stopTimer, timerStatus } = useDisciplineTimer();
+  const { startTimer, stopTimer, timerStatus, setTimerDuration } = useDisciplineTimer();
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -138,13 +138,15 @@ export function DisciplineTimer() {
               <Slider
                 value={[timerStatus.duration]}
                 onValueChange={([value]) => {
-                  // Permitir cambiar duración siempre
+                  // Actualizar duración en el store
+                  setTimerDuration(value);
                   console.log('Nueva duración:', value, 'minutos');
                 }}
                 max={120}
                 min={5}
                 step={5}
                 className="w-24"
+                disabled={timerStatus.isActive} // Solo permitir cambiar cuando no está activo
               />
             </div>
           </div>
