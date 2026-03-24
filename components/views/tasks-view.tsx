@@ -33,11 +33,13 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
   
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'SOC' | 'Content' | 'Personal' | 'Study'>('all');
   
-  // Filtrar tareas
+  // Filtrar tareas por estado y categoría
   const filteredTasks = tasks.filter(task => {
     if (filter === 'pending') return task.completed === 0;
     if (filter === 'completed') return task.completed === 1;
+    if (categoryFilter !== 'all') return task.category === categoryFilter;
     return true;
   });
   
@@ -69,31 +71,75 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
         </Button>
       </div>
       
-      {/* Filtros Compactos */}
+      {/* Filtros Compactos - Optimizados para móvil */}
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
         <Button
           variant={filter === 'all' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setFilter('all')}
-          className="h-10 px-3 whitespace-nowrap"
+          className="h-12 px-4 min-w-[100px] whitespace-nowrap text-sm font-medium touch-manipulation"
         >
           Todas ({tasks.length})
         </Button>
         <Button
           variant={filter === 'pending' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setFilter('pending')}
-          className="h-10 px-3 whitespace-nowrap"
+          className="h-12 px-4 min-w-[100px] whitespace-nowrap text-sm font-medium touch-manipulation"
         >
           Pendientes ({tasks.filter(t => t.completed === 0).length})
         </Button>
         <Button
           variant={filter === 'completed' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setFilter('completed')}
-          className="h-10 px-3 whitespace-nowrap"
+          className="h-12 px-4 min-w-[100px] whitespace-nowrap text-sm font-medium touch-manipulation"
         >
           Completadas ({tasks.filter(t => t.completed === 1).length})
+        </Button>
+      </div>
+      
+      {/* Filtros de Categoría - Optimizados para móvil */}
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
+        <Button
+          variant={categoryFilter === 'all' ? 'default' : 'outline'}
+          size="lg"
+          onClick={() => setCategoryFilter('all')}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+        >
+          TODAS
+        </Button>
+        <Button
+          variant={categoryFilter === 'SOC' ? 'default' : 'outline'}
+          size="lg"
+          onClick={() => setCategoryFilter('SOC')}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+        >
+          SOC
+        </Button>
+        <Button
+          variant={categoryFilter === 'Content' ? 'default' : 'outline'}
+          size="lg"
+          onClick={() => setCategoryFilter('Content')}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+        >
+          CONTENT
+        </Button>
+        <Button
+          variant={categoryFilter === 'Personal' ? 'default' : 'outline'}
+          size="lg"
+          onClick={() => setCategoryFilter('Personal')}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+        >
+          PERSONAL
+        </Button>
+        <Button
+          variant={categoryFilter === 'Study' ? 'default' : 'outline'}
+          size="lg"
+          onClick={() => setCategoryFilter('Study')}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+        >
+          STUDY
         </Button>
       </div>
       

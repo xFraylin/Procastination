@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: 'EJECUTA | Sistema de Disciplina y Ejecucion',
   description: 'Un sistema estricto de productividad enfocado en disciplina, ejecucion y anti-procrastinacion. Forzate a ejecutar tareas consistentemente.',
   generator: 'v0.app',
+  manifest: '/manifest.json',
   icons: {
     icon: [
       {
