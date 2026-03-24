@@ -104,40 +104,75 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
         <Button
           variant={categoryFilter === 'all' ? 'default' : 'outline'}
           size="lg"
-          onClick={() => setCategoryFilter('all')}
-          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+          onClick={() => {
+            console.log('Category filter changed to: all');
+            setCategoryFilter('all');
+          }}
+          onTouchStart={() => {
+            console.log('Touch start: all');
+            setCategoryFilter('all');
+          }}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation active:scale-95 transition-transform"
         >
           TODAS
         </Button>
         <Button
           variant={categoryFilter === 'SOC' ? 'default' : 'outline'}
           size="lg"
-          onClick={() => setCategoryFilter('SOC')}
-          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+          onClick={() => {
+            console.log('Category filter changed to: SOC');
+            setCategoryFilter('SOC');
+          }}
+          onTouchStart={() => {
+            console.log('Touch start: SOC');
+            setCategoryFilter('SOC');
+          }}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation active:scale-95 transition-transform"
         >
           SOC
         </Button>
         <Button
           variant={categoryFilter === 'Content' ? 'default' : 'outline'}
           size="lg"
-          onClick={() => setCategoryFilter('Content')}
-          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+          onClick={() => {
+            console.log('Category filter changed to: Content');
+            setCategoryFilter('Content');
+          }}
+          onTouchStart={() => {
+            console.log('Touch start: Content');
+            setCategoryFilter('Content');
+          }}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation active:scale-95 transition-transform"
         >
           CONTENT
         </Button>
         <Button
           variant={categoryFilter === 'Personal' ? 'default' : 'outline'}
           size="lg"
-          onClick={() => setCategoryFilter('Personal')}
-          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+          onClick={() => {
+            console.log('Category filter changed to: Personal');
+            setCategoryFilter('Personal');
+          }}
+          onTouchStart={() => {
+            console.log('Touch start: Personal');
+            setCategoryFilter('Personal');
+          }}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation active:scale-95 transition-transform"
         >
           PERSONAL
         </Button>
         <Button
           variant={categoryFilter === 'Study' ? 'default' : 'outline'}
           size="lg"
-          onClick={() => setCategoryFilter('Study')}
-          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation"
+          onClick={() => {
+            console.log('Category filter changed to: Study');
+            setCategoryFilter('Study');
+          }}
+          onTouchStart={() => {
+            console.log('Touch start: Study');
+            setCategoryFilter('Study');
+          }}
+          className="h-12 px-4 min-w-[80px] whitespace-nowrap text-sm font-medium touch-manipulation active:scale-95 transition-transform"
         >
           STUDY
         </Button>
