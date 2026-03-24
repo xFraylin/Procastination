@@ -88,6 +88,19 @@ interface AppState {
   isForceMode: boolean;
   setForceMode: (active: boolean) => void;
   
+  // Absolute Lock System
+  isAbsoluteLockActive: boolean;
+  setAbsoluteLockActive: (active: boolean) => void;
+  lockReason: string;
+  setLockReason: (reason: string) => void;
+  getAbsoluteLockStatus: () => { 
+  isActive: boolean; 
+  reason: string; 
+  canUnlock: boolean; 
+  tasksRemaining: number; 
+  totalTasks: number; 
+};
+  
   // Settings
   settings: Settings | null;
   setSettings: (settings: Settings | null) => void;
@@ -160,12 +173,30 @@ export const useAppStore = create<AppState>()(
       completeTask: (id, timeSpent) => {
         const tasks = get().tasks.map(t => 
           t.id === id 
-            ? { ...t, completed: 1, completed_at: new Date().toISOString(), time_spent: timeSpent || t.time_spent }
+            ? { ...t, completed: 1, completed_at: new Date().toISOString(), time_spent: timeSpent || 0 }
             : t
         );
         set({ tasks });
-        get().updateStreak();
-        get().updateDisciplineScore(10);
+        
+        // Verificar si se debe desactivar el bloqueo absoluto
+        const { isAbsoluteLockActive, getAbsoluteLockStatus } = get();
+        if (isAbsoluteLockActive) {
+          const lockStatus = getAbsoluteLockStatus();
+          if (lockStatus.canUnlock) {
+            // Auto-desbloquear cuando todas las tareas están completadas
+            setTimeout(() => {
+              const state = get();
+              if (state.isAbsoluteLockActive) {
+                state.setAbsoluteLockActive(false);
+                state.setLockReason('');
+                state.setCurrentView('dashboard');
+                console.log('¡Bloqueo absoluto desactivado! Todas las tareas completadas.');
+              }
+            }, 1000); // Pequeño delay para mostrar el mensaje de éxito
+          }
+        }
+        
+        get().updateDisciplineScore(5);
       },
       deleteTask: (id) => {
         const tasks = get().tasks.filter(t => t.id !== id);
@@ -188,6 +219,27 @@ export const useAppStore = create<AppState>()(
       setLockdownMode: (active) => set({ isLockdownMode: active }),
       isForceMode: false,
       setForceMode: (active) => set({ isForceMode: active }),
+      
+      // Absolute Lock System
+      isAbsoluteLockActive: false,
+      setAbsoluteLockActive: (active) => set({ isAbsoluteLockActive: active }),
+      lockReason: '',
+      setLockReason: (reason) => set({ lockReason: reason }),
+      getAbsoluteLockStatus: () => {
+        const state = get();
+        const tasks = state.tasks;
+        const today = new Date().toISOString().split('T')[0];
+        const todayTasks = tasks.filter(t => t.date === today);
+        const allCompleted = todayTasks.length > 0 && todayTasks.every(t => t.completed === 1);
+        
+        return {
+          isActive: state.isAbsoluteLockActive,
+          reason: state.lockReason,
+          canUnlock: allCompleted,
+          tasksRemaining: todayTasks.filter(t => t.completed === 0).length,
+          totalTasks: todayTasks.length
+        };
+      },
       
       // Settings
       settings: null,

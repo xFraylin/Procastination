@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppStore } from '@/lib/store';
+import { useAppStore, View } from '@/lib/store';
+import { useAbsoluteLock } from '@/hooks/use-absolute-lock';
+import { AbsoluteLock } from '@/components/absolute-lock';
 import { BottomNav } from '@/components/bottom-nav';
 import { Sidebar } from '@/components/sidebar-desktop';
 import { AntiProcrastination } from '@/components/anti-procrastination';
@@ -24,7 +26,8 @@ import { Task } from '@/lib/store';
 export function AppShell({ userId }: { userId?: number }) {
   const router = useRouter();
   
-  const {
+  const { 
+    currentUserId,
     currentView,
     tasks,
     addTask,
@@ -38,6 +41,9 @@ export function AppShell({ userId }: { userId?: number }) {
     _hasHydrated,
     streak,
   } = useAppStore();
+  
+  // Hook de bloqueo absoluto
+  const { safeNavigateTo, lockStatus } = useAbsoluteLock();
   
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -231,6 +237,9 @@ export function AppShell({ userId }: { userId?: number }) {
           onStartFirstTask={handleStartFirstTask}
           onCompleteActiveTask={handleCompleteActiveTask}
         />
+        
+        {/* Sistema de Bloqueo Absoluto - Global */}
+        <AbsoluteLock />
       </div>
     </TooltipProvider>
   );

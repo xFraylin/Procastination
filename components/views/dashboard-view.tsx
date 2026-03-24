@@ -5,6 +5,7 @@ import { useAppStore } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { ActivateLockButton } from '@/components/activate-lock-button';
 import {
   Flame,
   Target,
@@ -221,6 +222,21 @@ export function DashboardView() {
           Estadísticas
         </Button>
       </div>
+      
+      {/* Botón de Bloqueo Absoluto - Solo visible si no está activo */}
+      <Card className="border-destructive/20 bg-destructive/5">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-sm text-destructive">Modo Disciplina Absoluto</h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Bloquea todo acceso hasta completar tus tareas
+              </p>
+            </div>
+            <ActivateLockButton />
+          </div>
+        </CardContent>
+      </Card>
       
       {/* Mensaje Motivacional - Compacto */}
       <Card className="border-primary/20 bg-primary/5">
