@@ -154,6 +154,10 @@ export const useAppStore = create<AppState>()(
         };
       },
       
+      // Hydration State
+      _hasHydrated: false,
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
+      
       // Absolute Lock System
       isAbsoluteLockActive: false,
       setAbsoluteLockActive: (active) => set({ isAbsoluteLockActive: active }),
@@ -174,11 +178,7 @@ export const useAppStore = create<AppState>()(
           totalTasks: todayTasks.length
         };
       },
-      
-      // Hydration State
-      _hasHydrated: false,
-      setHasHydrated: (state) => set({ _hasHydrated: state }),
-    }),
+    },
     {
       name: 'disciplina-store',
       partialize: (state) => {
