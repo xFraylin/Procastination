@@ -117,7 +117,7 @@ export function DisciplineTimer() {
             Detener
           </Button>
           <Button
-            onClick={() => startTimer(timerStatus.taskId || undefined)}
+            onClick={() => startTimer(timerStatus.taskId || undefined, timerStatus.duration)}
             variant="outline"
             size="sm"
             className="flex-1"
