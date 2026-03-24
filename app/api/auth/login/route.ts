@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     
     response.cookies.set('auth-token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Permitir cookie en HTTP para VPS
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60, // 7 days
       path: '/'
