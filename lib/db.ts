@@ -1,5 +1,5 @@
-// Base de datos SQLite real para producción
-import database from './db-sqlite';
+// Base de datos sincronizada entre local y VPS
+import database from './db-sync';
 
 const db = database;
 
@@ -154,7 +154,7 @@ export interface Setting {
 }
 
 // Database interface methods
-const db = {
+const dbInterface = {
   prepare: (query: string) => ({
     run: (...params: any[]) => {
       if (query.includes('INSERT INTO users')) {
@@ -294,4 +294,4 @@ const db = {
   })
 };
 
-export default db;
+export default dbInterface;
