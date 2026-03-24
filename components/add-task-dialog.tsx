@@ -22,6 +22,8 @@ import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AddTaskDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onAdd: (task: {
     title: string;
     category: 'SOC' | 'Content' | 'Personal' | 'Study';
@@ -33,8 +35,7 @@ interface AddTaskDialogProps {
   tasksCount: number;
 }
 
-export function AddTaskDialog({ onAdd, disabled, tasksCount }: AddTaskDialogProps) {
-  const [open, setOpen] = useState(false);
+export function AddTaskDialog({ open, onOpenChange, onAdd, disabled, tasksCount }: AddTaskDialogProps) {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<'SOC' | 'Content' | 'Personal' | 'Study'>('Personal');
   const [difficulty, setDifficulty] = useState(3);
@@ -55,13 +56,13 @@ export function AddTaskDialog({ onAdd, disabled, tasksCount }: AddTaskDialogProp
     setCategory('Personal');
     setDifficulty(3);
     setDuration(30);
-    setOpen(false);
+    onOpenChange?.(false);
   };
   
   const isMaxTasks = tasksCount >= 5;
   
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="outline"

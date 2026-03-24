@@ -41,6 +41,23 @@ interface MemorySetting {
   created_at?: string;
 }
 
+interface MemoryDailyLog {
+  id: number;
+  user_id: number;
+  date: string;
+  tasks_completed: number;
+  tasks_failed: number;
+  total_time_spent: number;
+  notes: string | null;
+  what_completed: string | null;
+  what_failed: string | null;
+  why_failed: string | null;
+  discipline_score: number;
+  completed_task_ids: number[]; // IDs de tareas completadas
+  failed_task_ids: number[];    // IDs de tareas fallidas
+  created_at: string;
+}
+
 // In-memory storage
 let users: MemoryUser[] = [
   {
@@ -52,6 +69,7 @@ let users: MemoryUser[] = [
 ];
 let tasks: MemoryTask[] = [];
 let streaks: MemoryStreak[] = [];
+let dailyLogs: MemoryDailyLog[] = [];
 let settings: MemorySetting[] = [
   {
     id: 1,
@@ -86,6 +104,7 @@ let settings: MemorySetting[] = [
 let userIdCounter = 1;
 let taskIdCounter = 1;
 let streakIdCounter = 1;
+let dailyLogIdCounter = 1;
 let settingIdCounter = 1;
 
 // Helper types
@@ -245,6 +264,50 @@ const dbInterface = {
         return {};
       }
       
+      if (query.includes('INSERT INTO daily_logs')) {
+        const [user_id, date, what_completed, what_failed, why_failed, discipline_score] = params;
+        const newDailyLog: MemoryDailyLog = {
+          id: dailyLogIdCounter++,
+          user_id,
+          date,
+          tasks_completed: 0, // Se calculará basado en tareas
+          tasks_failed: 0,    // Se calculará basado en tareas
+          total_time_spent: 0, // Se calculará basado en tareas
+          notes: null,
+          what_completed,
+          what_failed,
+          why_failed,
+          discipline_score,
+          completed_task_ids: [], // Se llenará después
+          failed_task_ids: [],    // Se llenará después
+          created_at: new Date().toISOString()
+        };
+        dailyLogs.push(newDailyLog);
+        return { lastInsertRowid: newDailyLog.id };
+      }
+      
+      if (query.includes('UPDATE daily_logs')) {
+        const [what_completed, what_failed, why_failed, discipline_score, user_id, date] = params;
+        const logIndex = dailyLogs.findIndex(dl => dl.user_id === user_id && dl.date === date);
+        if (logIndex !== -1) {
+          dailyLogs[logIndex] = { 
+            ...dailyLogs[logIndex], 
+            what_completed,
+            what_failed,
+            why_failed,
+            discipline_score
+          };
+        }
+        return { lastInsertRowid: dailyLogs[logIndex]?.id || 0 };
+      }
+      
+      if (query.includes('DELETE FROM daily_logs')) {
+        const [user_id, date] = params;
+        const originalLength = dailyLogs.length;
+        dailyLogs = dailyLogs.filter(dl => !(dl.user_id === user_id && dl.date === date));
+        return { changes: originalLength - dailyLogs.length };
+      }
+      
       return {};
     },
     get: (...params: any[]) => {
@@ -276,6 +339,16 @@ const dbInterface = {
       if (query.includes('SELECT * FROM settings WHERE user_id = ?')) {
         const [user_id] = params;
         return settings.filter(s => s.user_id === user_id);
+      }
+      
+      if (query.includes('SELECT * FROM daily_logs WHERE user_id = ? AND date = ?')) {
+        const [user_id, date] = params;
+        return dailyLogs.find(dl => dl.user_id === user_id && dl.date === date) || undefined;
+      }
+      
+      if (query.includes('SELECT id FROM daily_logs WHERE user_id = ? AND date = ?')) {
+        const [user_id, date] = params;
+        return dailyLogs.find(dl => dl.user_id === user_id && dl.date === date) || undefined;
       }
       
       return undefined;

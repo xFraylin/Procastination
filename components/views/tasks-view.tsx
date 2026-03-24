@@ -7,6 +7,7 @@ import { AddTaskDialog } from '@/components/add-task-dialog';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Lock, Shield, AlertTriangle } from 'lucide-react';
+import { useAbsoluteLock } from '@/hooks/use-absolute-lock';
 import { DisciplineTimer } from '@/components/discipline-timer';
 import { cn } from '@/lib/utils';
 
@@ -26,11 +27,14 @@ interface TasksViewProps {
 export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask }: TasksViewProps) {
   const { 
     tasks, 
-    isLockdownMode, 
-    setLockdownMode, 
-    isForceMode, 
-    setForceMode,
+    addTask, 
+    completeTask, 
+    deleteTask, 
+    currentView, 
+    setCurrentView 
   } = useAppStore();
+  
+  const { lockStatus } = useAbsoluteLock();
   
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
@@ -183,19 +187,16 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
       <DisciplineTimer />
       
       {/* Modos de Disciplina - Compactos */}
-      {(isLockdownMode || isForceMode) && !allTasksCompleted && (
+      {lockStatus.isActive && !lockStatus.canUnlock && (
         <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
           <div className="flex items-center gap-2 text-destructive">
-            {isForceMode ? <Shield className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+            <Lock className="h-4 w-4" />
             <span className="text-sm font-bold">
-              {isForceMode ? 'MODO FORZADO ACTIVO' : 'BLOQUEO ACTIVO'}
+              BLOQUEO ABSOLUTO ACTIVO
             </span>
           </div>
           <p className="text-xs text-destructive mt-1">
-            {isForceMode 
-              ? 'Completa todas las tareas o el sistema permanecerá bloqueado'
-              : 'No puedes acceder a otras aplicaciones hasta completar las tareas'
-            }
+            No puedes acceder a otras funciones hasta completar todas las tareas pendientes
           </p>
         </div>
       )}
@@ -260,6 +261,8 @@ export function TasksView({ onAddTask, onStartTask, onCompleteTask, onDeleteTask
       
       {/* Diálogo para agregar tarea */}
       <AddTaskDialog
+        open={showAddDialog}
+        onOpenChange={setShowAddDialog}
         onAdd={onAddTask}
         disabled={false}
         tasksCount={tasks.length}

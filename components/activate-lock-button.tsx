@@ -20,11 +20,17 @@ export function ActivateLockButton() {
   const [reason, setReason] = useState('Modo disciplina activado');
   const [confirmHardcore, setConfirmHardcore] = useState(false);
 
+  // Debug: Verificar que el hook esté funcionando
+  console.log('🔍 ActivateLockButton - lockStatus:', lockStatus);
+  console.log('🔍 ActivateLockButton - activateAbsoluteLock:', typeof activateAbsoluteLock);
+
   const handleActivate = () => {
     if (!confirmHardcore) {
       alert('Debes confirmar que entiendes las consecuencias del modo hardcore.');
       return;
     }
+    
+    console.log('🚀 Activando bloqueo con razón:', reason);
     
     // Reproducir sonido de activación
     try {

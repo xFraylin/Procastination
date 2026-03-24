@@ -31,7 +31,16 @@ const statusConfig = {
 };
 
 export function ContentView() {
-  const { contentIdeas, addContentIdea, updateContentIdea, deleteContentIdea } = useAppStore();
+  const store = useAppStore();
+  
+  // Debug extremo: Verificar todo el store
+  console.log('🔍 Store completo:', store);
+  console.log('🔍 contentIdeas:', store.contentIdeas);
+  console.log('🔍 typeof contentIdeas:', typeof store.contentIdeas);
+  console.log('🔍 Array.isArray:', Array.isArray(store.contentIdeas));
+  
+  const { contentIdeas, addContentIdea, updateContentIdea, deleteContentIdea } = store;
+  
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [newIdea, setNewIdea] = useState({ title: '', description: '', script: '', status: 'idea' as const });
   
@@ -57,11 +66,14 @@ export function ContentView() {
     deleteContentIdea(id);
   };
   
+  // Fallback seguro para contentIdeas
+const safeContentIdeas = Array.isArray(contentIdeas) ? contentIdeas : [];
+  
   const groupedIdeas = {
-    idea: contentIdeas.filter(i => i.status === 'idea'),
-    scripted: contentIdeas.filter(i => i.status === 'scripted'),
-    recorded: contentIdeas.filter(i => i.status === 'recorded'),
-    published: contentIdeas.filter(i => i.status === 'published'),
+    idea: safeContentIdeas.filter(i => i?.status === 'idea'),
+    scripted: safeContentIdeas.filter(i => i?.status === 'scripted'),
+    recorded: safeContentIdeas.filter(i => i?.status === 'recorded'),
+    published: safeContentIdeas.filter(i => i?.status === 'published'),
   };
   
   return (

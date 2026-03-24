@@ -29,10 +29,17 @@ export function useAbsoluteLock() {
 
   // Función para activar el bloqueo absoluto
   const activateAbsoluteLock = (reason: string = 'Modo disciplina activado') => {
+    console.log('🚀 useAbsoluteLock - Activando bloqueo con razón:', reason);
+    
     const { setAbsoluteLockActive, setLockReason } = useAppStore.getState();
+    console.log('🔍 useAbsoluteLock - setAbsoluteLockActive:', typeof setAbsoluteLockActive);
+    console.log('🔍 useAbsoluteLock - setLockReason:', typeof setLockReason);
+    
     setAbsoluteLockActive(true);
     setLockReason(reason);
     setCurrentView('tasks');
+    
+    console.log('✅ useAbsoluteLock - Bloqueo activado');
   };
 
   // Función para desactivar el bloqueo (solo si todas las tareas están completadas)

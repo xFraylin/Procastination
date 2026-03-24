@@ -16,6 +16,15 @@ export type Task = {
   created_at: string;
 };
 
+export type ContentIdea = {
+  id: number;
+  title: string;
+  description: string | null;
+  script: string | null;
+  status: 'idea' | 'scripted' | 'recorded' | 'published';
+  created_at: string;
+};
+
 export type View = 'dashboard' | 'tasks' | 'focus' | 'stats' | 'content' | 'review';
 
 interface AppState {
@@ -67,6 +76,44 @@ interface AppState {
   // Hydration State
   _hasHydrated: boolean;
   setHasHydrated: (state: boolean) => void;
+  
+  // Anti-Procrastination State
+  lastInteraction: number;
+  setLastInteraction: (time: number) => void;
+  idleWarningShown: boolean;
+  setIdleWarningShown: (shown: boolean) => void;
+  settings: any;
+  setSettings: (settings: any) => void;
+  
+  // Content Ideas State
+  contentIdeas: ContentIdea[];
+  addContentIdea: (idea: Omit<ContentIdea, 'id' | 'created_at'>) => void;
+  updateContentIdea: (id: number, idea: Partial<ContentIdea>) => void;
+  deleteContentIdea: (id: number) => void;
+  
+  // Daily Logs State
+  dailyLogs: any[];
+  getDailyLog: (date: string) => any;
+  saveDailyLog: (log: any) => void;
+  updateStreak: () => void;
+  disciplineScore: number;
+  
+  // Focus Mode State
+  activeTask: Task | null;
+  setActiveTask: (task: Task | null) => void;
+  isFocusMode: boolean;
+  setFocusMode: (active: boolean) => void;
+  focusTimeRemaining: number;
+  setFocusTimeRemaining: (time: number) => void;
+  focusTimerRunning: boolean;
+  setFocusTimerRunning: (running: boolean) => void;
+  
+  // Streak State
+  streak: {
+    current_streak: number;
+    longest_streak: number;
+    last_completed_date: string | null;
+  };
 }
 
 export const useAppStore = create<AppState>()(
@@ -178,6 +225,99 @@ export const useAppStore = create<AppState>()(
       // Hydration State
       _hasHydrated: false,
       setHasHydrated: (state) => set({ _hasHydrated: state }),
+      
+      // Anti-Procrastination State
+      lastInteraction: Date.now(),
+      setLastInteraction: (time) => set({ lastInteraction: time }),
+      idleWarningShown: false,
+      setIdleWarningShown: (shown) => set({ idleWarningShown: shown }),
+      settings: null,
+      setSettings: (settings) => set({ settings }),
+      
+      // Content Ideas State
+      contentIdeas: [],
+      addContentIdea: (idea) => {
+        const ideas = get().contentIdeas;
+        const newIdea = {
+          ...idea,
+          id: Date.now(),
+          created_at: new Date().toISOString(),
+        };
+        set({ contentIdeas: [...ideas, newIdea] });
+      },
+      updateContentIdea: (id, idea) => {
+        const ideas = get().contentIdeas.map(i => 
+          i.id === id ? { ...i, ...idea } : i
+        );
+        set({ contentIdeas: ideas });
+      },
+      deleteContentIdea: (id) => {
+        const ideas = get().contentIdeas.filter(i => i.id !== id);
+        set({ contentIdeas: ideas });
+      },
+      
+      // Daily Logs State
+      dailyLogs: [],
+      disciplineScore: 0,
+      getDailyLog: (date) => {
+        const logs = get().dailyLogs;
+        return logs.find(log => log.date === date) || null;
+      },
+      saveDailyLog: (log) => {
+        const logs = get().dailyLogs;
+        const existingIndex = logs.findIndex(l => l.date === log.date);
+        
+        if (existingIndex >= 0) {
+          logs[existingIndex] = log;
+        } else {
+          logs.push(log);
+        }
+        
+        set({ dailyLogs: [...logs] });
+      },
+      updateStreak: () => {
+        // Implementación simple de streak
+        const today = new Date().toISOString().split('T')[0];
+        const logs = get().dailyLogs;
+        const todayLog = logs.find(log => log.date === today);
+        
+        if (todayLog) {
+          // Calcular streak basado en logs consecutivos
+          let streak = 1;
+          const sortedLogs = logs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          
+          for (let i = 1; i < sortedLogs.length; i++) {
+            const currentDate = new Date(sortedLogs[i-1].date);
+            const prevDate = new Date(sortedLogs[i].date);
+            const diffDays = Math.floor((currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) {
+              streak++;
+            } else {
+              break;
+            }
+          }
+          
+          set({ disciplineScore: streak * 10 });
+        }
+      },
+      
+      // Focus Mode State
+      activeTask: null,
+      setActiveTask: (task) => set({ activeTask: task }),
+      isFocusMode: false,
+      setFocusMode: (active) => set({ isFocusMode: active }),
+      focusTimeRemaining: 0,
+      setFocusTimeRemaining: (time) => set({ focusTimeRemaining: time }),
+      focusTimerRunning: false,
+      setFocusTimerRunning: (running) => set({ focusTimerRunning: running }),
+      
+      // Streak State
+      streak: {
+        current_streak: 0,
+        longest_streak: 0,
+        last_completed_date: null,
+      },
     }),
     {
       name: 'disciplina-store',
@@ -193,6 +333,14 @@ export const useAppStore = create<AppState>()(
           timerDuration: state.timerDuration,
           timerTimeRemaining: state.timerTimeRemaining,
           timerTaskId: state.timerTaskId,
+          contentIdeas: state.contentIdeas,
+          dailyLogs: state.dailyLogs,
+          disciplineScore: state.disciplineScore,
+          activeTask: state.activeTask,
+          isFocusMode: state.isFocusMode,
+          focusTimeRemaining: state.focusTimeRemaining,
+          focusTimerRunning: state.focusTimerRunning,
+          streak: state.streak,
         };
       },
       onRehydrateStorage: () => (state) => {

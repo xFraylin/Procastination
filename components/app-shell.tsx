@@ -17,6 +17,8 @@ import { FocusView } from '@/components/views/focus-view';
 import { StatsView } from '@/components/views/stats-view';
 import { ContentView } from '@/components/views/content-view';
 import { ReviewView } from '@/components/views/review-view';
+import { ReviewViewEnhanced } from '@/components/views/review-view-enhanced';
+import { ReviewViewInteractive } from '@/components/views/review-view-interactive';
 import { AddTaskDialog } from '@/components/add-task-dialog';
 import { Flame, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,19 +29,16 @@ export function AppShell({ userId }: { userId?: number }) {
   const router = useRouter();
   
   const { 
-    currentUserId,
-    currentView,
+    currentView, 
+    setCurrentView,
     tasks,
     addTask,
     completeTask,
     deleteTask,
     activeTask,
     setActiveTask,
-    setCurrentView,
-    setFocusTimeRemaining,
-    isFocusMode,
-    _hasHydrated,
     streak,
+    _hasHydrated
   } = useAppStore();
   
   // Hook de bloqueo absoluto
@@ -143,7 +142,7 @@ export function AppShell({ userId }: { userId?: number }) {
       case 'content':
         return <ContentView />;
       case 'review':
-        return <ReviewView />;
+        return <ReviewViewInteractive />;
       default:
         return <DashboardView />;
     }
