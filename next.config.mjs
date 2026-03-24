@@ -3,8 +3,8 @@ const nextConfig = {
   // Permitir acceso desde tu IP en desarrollo
   allowedDevOrigins: ['10.0.0.3'],
   
-  // Configuración para producción standalone
-  output: 'standalone',
+  // Desactivar output standalone para evitar Server Action errors
+  // output: 'standalone',
   
   typescript: {
     ignoreBuildErrors: true,
