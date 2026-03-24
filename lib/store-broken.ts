@@ -18,6 +18,38 @@ export type Task = {
 
 export type View = 'dashboard' | 'tasks' | 'focus' | 'stats' | 'content' | 'review';
 
+interface TimerState {
+  isTimerActive: boolean;
+  setTimerActive: (active: boolean) => void;
+  timerDuration: number; // minutos
+  setTimerDuration: (duration: number) => void;
+  timerTimeRemaining: number; // en segundos
+  setTimerTimeRemaining: (time: number) => void;
+  timerTaskId: number | null;
+  setTimerTaskId: (taskId: number | null) => void;
+  getTimerStatus: () => { 
+    isActive: boolean; 
+    duration: number; 
+    timeRemaining: number; 
+    taskId: number | null;
+    progress: number;
+  };
+}
+
+interface LockState {
+  isAbsoluteLockActive: boolean;
+  setAbsoluteLockActive: (active: boolean) => void;
+  lockReason: string;
+  setLockReason: (reason: string) => void;
+  getAbsoluteLockStatus: () => { 
+    isActive: boolean; 
+    reason: string; 
+    canUnlock: boolean; 
+    tasksRemaining: number; 
+    totalTasks: number; 
+  };
+}
+
 interface AppState {
   // User
   currentUserId: number | null;
@@ -35,34 +67,10 @@ interface AppState {
   deleteTask: (id: number) => void;
   
   // Timer System
-  isTimerActive: boolean;
-  setTimerActive: (active: boolean) => void;
-  timerDuration: number; // minutos
-  setTimerDuration: (duration: number) => void;
-  timerTimeRemaining: number; // en segundos
-  setTimerTimeRemaining: (time: number) => void;
-  timerTaskId: number | null;
-  setTimerTaskId: (taskId: number | null) => void;
-  getTimerStatus: () => { 
-    isActive: boolean; 
-    duration: number; 
-    timeRemaining: number; 
-    taskId: number | null;
-    progress: number;
-  };
+  ...TimerState;
   
   // Absolute Lock System
-  isAbsoluteLockActive: boolean;
-  setAbsoluteLockActive: (active: boolean) => void;
-  lockReason: string;
-  setLockReason: (reason: string) => void;
-  getAbsoluteLockStatus: () => { 
-    isActive: boolean; 
-    reason: string; 
-    canUnlock: boolean; 
-    tasksRemaining: number; 
-    totalTasks: number; 
-  };
+  ...LockState;
 }
 
 export const useAppStore = create<AppState>()(
@@ -129,8 +137,8 @@ export const useAppStore = create<AppState>()(
       // Timer System
       isTimerActive: false,
       setTimerActive: (active) => set({ isTimerActive: active }),
-      timerDuration: 30, // 30 minutos por defecto
-      setTimerDuration: (duration) => set({ timerDuration: duration }),
+      timerDuration: 30, // 30 minutos fijos
+      setTimerDuration: (duration) => set({ timerDuration: duration }), // mantenido para compatibilidad
       timerTimeRemaining: 0,
       setTimerTimeRemaining: (time) => set({ timerTimeRemaining: time }),
       timerTaskId: null,
