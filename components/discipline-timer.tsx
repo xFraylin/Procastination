@@ -29,6 +29,45 @@ export function DisciplineTimer() {
     return 'default';
   };
 
+  const getMotivationalMessage = (duration: number, timeRemaining: number): string => {
+    const progress = ((duration * 60 - timeRemaining) / (duration * 60)) * 100;
+    
+    // Frases según duración y progreso
+    if (duration <= 15) {
+      // Tareas cortas (5-15 min)
+      if (progress >= 90) return '⚡ ¡Sé un rayo! Casi lo logras.';
+      if (progress >= 75) return '🔥 Enfócate intensamente! La victoria está cerca.';
+      if (progress >= 50) return '💪 Sigue adelante! Cada segundo cuenta.';
+      if (progress >= 25) return '🎯 Bien comenzado! Mantén el ritmo.';
+      return '🚀 Empieza con fuerza! Los 15 minutos pasarán volando.';
+    }
+    
+    if (duration <= 30) {
+      // Tareas medianas (15-30 min)
+      if (progress >= 90) return '⚡ ¡Últimos minutos! Mantén la concentración máxima!';
+      if (progress >= 75) return '🔥 Más de 3/4 completado! Sigue así, campeón.';
+      if (progress >= 50) return '💪 Bien hecho! Llevas más de la mitad.';
+      if (progress >= 25) return '🎯 Buen ritmo! La disciplina está funcionando.';
+      return '🚀 Enfócate y entrega! Tu mejor versión está apareciendo.';
+    }
+    
+    if (duration <= 45) {
+      // Tareas largas (30-45 min)
+      if (progress >= 90) return '⚡ ¡Momento decisivo! Tu determinación se está probando.';
+      if (progress >= 75) return '🔥 Guerrero de la disciplina! No te rindas.';
+      if (progress >= 50) return '💪 Campeón en marcha! La victoria es inevitable.';
+      if (progress >= 25) return '🎯 Maestría en progreso! Cada minuto es una victoria.';
+      return '🚀 Leyenda de la productividad! Estás escribiendo historia.';
+    }
+    
+    // Tareas muy largas (45+ min)
+    if (progress >= 90) return '⚡ ¡Inmortal! Tu disciplina es legendaria.';
+    if (progress >= 75) return '🔥 Titan de la productividad! Nadie puede detenerte.';
+    if (progress >= 50) return '💪 Maestro absoluto! Controlas el tiempo.';
+    if (progress >= 25) return '🎯 Virtuoso de la disciplina! La excelencia es tu hábito.';
+    return '🚀 Dios de la productividad! Has trascendido los límites.';
+  };
+
   if (!timerStatus.isActive) {
     return null;
   }
@@ -99,22 +138,18 @@ export function DisciplineTimer() {
               <Slider
                 value={[timerStatus.duration]}
                 onValueChange={([value]) => {
-                  // Solo permitir cambiar duración si el temporizador no está activo
-                  if (!timerStatus.isActive) {
-                    // Esto se manejará en el hook
-                    console.log('Nueva duración:', value, 'minutos');
-                  }
+                  // Permitir cambiar duración siempre
+                  console.log('Nueva duración:', value, 'minutos');
                 }}
                 max={120}
                 min={5}
                 step={5}
                 className="w-24"
-                disabled={timerStatus.isActive}
               />
             </div>
           </div>
           <div className="text-xs text-muted-foreground">
-            Ajusta la duración antes de iniciar el temporizador
+            Ajusta la duración según tu tipo de tarea
           </div>
         </div>
 
@@ -135,11 +170,7 @@ export function DisciplineTimer() {
         {/* Mensaje motivacional según progreso */}
         <div className="text-center p-3 bg-muted/30 rounded-lg">
           <p className="text-sm font-medium text-muted-foreground">
-            {timerStatus.progress >= 90 && '⚡ ¡Últimos minutos! Mantén el foco!'}
-            {timerStatus.progress >= 75 && timerStatus.progress < 90 && '🔥 Más de 3/4 completado! Sigue así!'}
-            {timerStatus.progress >= 50 && timerStatus.progress < 75 && '💪 Bien hecho! Llevas más de la mitad!'}
-            {timerStatus.progress >= 25 && timerStatus.progress < 50 && '🚀 Buen comienzo! Sigue adelante!'}
-            {timerStatus.progress < 25 && '🎯 Enfócate y empieza fuerte!'}
+            {getMotivationalMessage(timerStatus.duration, timerStatus.timeRemaining)}
           </p>
         </div>
 
