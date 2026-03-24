@@ -215,8 +215,8 @@ export function AppShell({ userId }: { userId?: number }) {
           </aside>
         </div>
         
-        {/* Sistema anti-procrastinacion - Global */}
-        <AntiProcrastination />
+        {/* Sistema anti-procrastinacion - Temporalmente desactivado */}
+        {/* <AntiProcrastination /> */}
         
         {/* Confirmacion de eliminacion - Global */}
         <SkipConfirmation
